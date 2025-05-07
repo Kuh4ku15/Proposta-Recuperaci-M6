@@ -1,0 +1,34 @@
+
+-- EXPLICACIÓ
+
+El codi que veiem és la funció que instal·la els serveis. 
+Per a la metaexplotable he preparat els serveis apache, mysql, php, telnet, openssh, samba, nfs i netcat (el echo -e simplement mostra per pantalla el que vull amb el color que especifico abans). 
+Si te n'adones ara descarrego una versió en específic de Vsftpd, ja que aquesta disposa d’una backdoor que ens pot servir per a les pràctiques de Ciberseguretat. 
+I finalment clono del GitHub les webs de DVWA i Mutillidae que es fan servir per a fent servir bases de dades fer atacs d’injecció SQL per exemple.
+
+-- CODI
+
+function install_services() {
+    echo -e "${GREEN}[*] Instalando servicios vulnerables...${NC}"
+
+    apt update
+    apt install -y build-essential wget curl git unzip apache2 mysql-server php php-mysql \
+        telnetd openssh-server samba nfs-kernel-server netcat
+
+    echo -e "${GREEN}[*] Instalando vsftpd 2.3.4 con backdoor...${NC}"
+    wget https://gitlab.com/exploit-database/exploitdb-bin-sploits/-/raw/main/bin-sploits/17491.tar.gz -O /tmp/vsftpd-2.3.4.tar.gz
+    tar -xzf /tmp/vsftpd-2.3.4.tar.gz -C /tmp
+    cd /tmp/vsftpd-2.3.4
+    make && make install
+    cd ~
+
+    echo -e "${GREEN}[*] Instalando DVWA y Mutillidae...${NC}"
+    git clone https://github.com/digininja/DVWA /var/www/html/dvwa
+    git clone https://github.com/webpwnized/mutillidae /var/www/html/mutillidae
+    chown -R www-data:www-data /var/www/html/
+
+    echo -e "${GREEN}[*] Activando servicios...${NC}"
+    systemctl restart apache2 mysql vsftpd ssh smbd nfs-kernel-server
+
+    echo -e "${GREEN}[+] Servicios vulnerables instalados y configurados.${NC}"
+}

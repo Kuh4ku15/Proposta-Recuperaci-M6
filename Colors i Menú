@@ -1,0 +1,31 @@
+
+-- EXPLICACIÓ
+
+Dins del script veurem com al principi del tot poso les següents línies:
+set -e: permet que l’script termini immediatament si qualsevol comanda falla, retornant un codi d’error diferent de zero.
+RED=
+GREEN=
+NC=
+Permeten amb red, green i no color establir els colors que es mostraran per terminal fent l’execució més atractiva a la vista.
+I a més tenim el menú que ens permetrà veure quines funcions del codi volem fer servir. Al final faig servir la funció de "show_menu" per a veure com quedaría amb els colors.
+
+-- CODI
+
+#!/bin/bash
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+function show_menu() {
+    echo -e "${GREEN}"
+    echo "====== Menú Metasploitable Custom ======"
+    echo "1. Instalar servicios vulnerables"
+    echo "2. Crear usuarios inseguros"
+    echo "3. Esconder flags"
+    echo "0. Salir"
+    echo -e "${NC}"
+}
+
+show_menu

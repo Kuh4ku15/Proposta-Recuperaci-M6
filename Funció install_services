@@ -32,3 +32,4 @@ function install_services() {
 
     echo -e "${GREEN}[+] Servicios vulnerables instalados y configurados.${NC}"
 }
+

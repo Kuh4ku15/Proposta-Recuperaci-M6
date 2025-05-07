@@ -1,0 +1,72 @@
+
+-- CODI
+
+#!/bin/bash
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+function install_services() {
+    echo -e "${GREEN}[*] Instalando servicios vulnerables...${NC}"
+
+    apt update
+    apt install -y build-essential wget curl git unzip apache2 mysql-server php php-mysql \
+        telnetd openssh-server samba nfs-kernel-server netcat
+
+    echo -e "${GREEN}[*] Instalando vsftpd 2.3.4 con backdoor...${NC}"
+    wget https://gitlab.com/exploit-database/exploitdb-bin-sploits/-/raw/main/bin-sploits/17491.tar.gz -O /tmp/vsftpd-2.3.4.tar.gz
+    tar -xzf /tmp/vsftpd-2.3.4.tar.gz -C /tmp
+    cd /tmp/vsftpd-2.3.4
+    make && make install
+    cd ~
+
+    echo -e "${GREEN}[*] Instalando DVWA y Mutillidae...${NC}"
+    git clone https://github.com/digininja/DVWA /var/www/html/dvwa
+    git clone https://github.com/webpwnized/mutillidae /var/www/html/mutillidae
+    chown -R www-data:www-data /var/www/html/
+
+    echo -e "${GREEN}[*] Activando servicios...${NC}"
+    systemctl restart apache2 mysql vsftpd ssh smbd nfs-kernel-server
+
+    echo -e "${GREEN}[+] Servicios vulnerables instalados y configurados.${NC}"
+}
+
+function create_users() {
+    echo -e "${GREEN}[*] Creando usuarios inseguros...${NC}"
+    useradd -m -s /bin/bash user1 && echo "user1:1234" | chpasswd
+    useradd -m -s /bin/bash user2 && echo "user2:password" | chpasswd
+    echo -e "${GREEN}[+] Usuarios creados.${NC}"
+}
+
+function hide_flags() {
+    echo -e "${GREEN}[*] Escondiendo flags tipo CTF...${NC}"
+    echo "FLAG{ftp_found_me}" > /home/user1/.hidden_flag
+    echo "FLAG{www_root_flag}" > /var/www/html/.flag
+    mkdir -p /srv/samba/share && echo "FLAG{smb_share_flag}" > /srv/samba/share/.flag
+    mkdir -p /opt/.supersecret && echo "FLAG{deeply_hidden}" > /opt/.supersecret/flag.txt
+    echo -e "${GREEN}[+] Flags escondidas.${NC}"
+}
+
+function show_menu() {
+    echo -e "${GREEN}"
+    echo "====== Menú Metasploitable Custom ======"
+    echo "1. Instalar servicios vulnerables"
+    echo "2. Crear usuarios inseguros"
+    echo "3. Esconder flags"
+    echo "0. Salir"
+    echo -e "${NC}"
+}
+
+while true; do
+    show_menu
+    read -p "Selecciona una opción: " opcion
+    case $opcion in
+        1) install_services ;;
+        2) create_users ;;
+        3) hide_flags ;;
+        0) echo -e "${RED}Saliendo...${NC}"; exit 0 ;;
+        *) echo -e "${RED}Opción inválida${NC}" ;;
+    esac
+done

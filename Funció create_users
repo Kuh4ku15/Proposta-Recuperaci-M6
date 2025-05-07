@@ -1,0 +1,22 @@
+
+-- EXPLICACIÓ
+
+Ara passarem a la funció que crea els usuaris. Sempre creem usuaris amb adduser, ja que useradd no crea els seus directoris arrel normalment. Per a aquesta pràctica un ús eficient de useradd seria el següent:
+
+-m: Li crea el directori arrel a “/home/”.
+
+-s /bin/bash: Li assigna una shell de bash.
+
+Posem el nom de l’usuari i ara si t’adones faig servir un “echo” posant el nom i la contrasenya de l'usuari i després faig servir un “pipe” i la comanda “chpasswd”. 
+Per què ho fas així en comptes de fer servir “passwd” pensaràs. 
+Això ho fem perquè principalment “passwd” requereix interacció posant la comanda i l’usuari tot perquè posteriorment ens surti una altra línia a baix a la que posar la contrasenya, però, 
+l’altre motiu de fer servir “chpasswd” és que després de fer el “echo” la “pipe” agafa la seva sortida (en format usuari:passwd) i se la passa al chpasswd, que aquest evita deixar en l'historial de comandes.
+
+-- CODI
+
+function create_users() {
+    echo -e "${GREEN}[*] Creando usuarios inseguros...${NC}"
+    useradd -m -s /bin/bash user1 && echo "user1:1234" | chpasswd
+    useradd -m -s /bin/bash user2 && echo "user2:password" | chpasswd
+    echo -e "${GREEN}[+] Usuarios creados.${NC}"
+}

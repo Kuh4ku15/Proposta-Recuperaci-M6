@@ -1,0 +1,20 @@
+
+-- EXPLICACIÓ
+
+El que farà que el menú funcioni serà un bucle que primer de tot mostrarà el menú fent servir la seva funció i es quedarà esperant com mostra el “read -p” a què escollim una de les opcions 
+especificades en el “case” (“ * ” és en cas de no escollir cap de les que tenim preparades perquè el codi no doni error).
+
+
+-- CODI
+
+while true; do
+    show_menu
+    read -p "Selecciona una opción: " opcion
+    case $opcion in
+        1) install_services ;;
+        2) create_users ;;
+        3) hide_flags ;;
+        0) echo -e "${RED}Saliendo...${NC}"; exit 0 ;;
+        *) echo -e "${RED}Opción inválida${NC}" ;;
+    esac
+done

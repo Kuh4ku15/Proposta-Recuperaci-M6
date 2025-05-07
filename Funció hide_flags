@@ -1,0 +1,15 @@
+
+-- EXPLICACIÓ
+
+La funció d'amagar les flags simplement crea aquestes “flags” (i els seus directoris) que són bàsicament el que busquen els atacant per a fer els exercicis de hacking ètic.
+
+-- CODI
+
+function hide_flags() {
+    echo -e "${GREEN}[*] Escondiendo flags tipo CTF...${NC}"
+    echo "FLAG{ftp_found_me}" > /home/user1/.hidden_flag
+    echo "FLAG{www_root_flag}" > /var/www/html/.flag
+    mkdir -p /srv/samba/share && echo "FLAG{smb_share_flag}" > /srv/samba/share/.flag
+    mkdir -p /opt/.supersecret && echo "FLAG{deeply_hidden}" > /opt/.supersecret/flag.txt
+    echo -e "${GREEN}[+] Flags escondidas.${NC}"
+}
